@@ -2,12 +2,12 @@ package model;
 
 public interface Builder {
 
-    void setId(int id);
-    void setName(String name);
-    void setDescription(String description);
-    void setYear(int year);
-    void setGenreId(int genreId);
-    void setMinimalAge(int minimalAge);
-    void setDurationInTime(int durationInTime);
-    void setFileId(int fileId);
+    Builder setId(int id);
+    Builder setName(String name);
+    Builder setDescription(String description);
+    Builder setYear(int year);
+    Builder setGenreId(int genreId);
+    Builder setMinimalAge(int minimalAge);
+    Builder setDurationInTime(int durationInTime);
+    Builder setFileId(int fileId);
 }

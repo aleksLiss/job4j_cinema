@@ -10,51 +10,57 @@ public class Film implements Builder {
     private int minimalAge;
     private int durationInTime;
     private int fileId;
-
-    public Film(int id, String name, String description, int year, int genreId, int minimalAge, int durationInTime, int fileId) {
-    }
+    private final Film film = new Film();
 
     public Film build() {
-        return new Film(id, name, description, year, genreId, minimalAge, durationInTime, fileId);
+        return film;
     }
 
     @Override
-    public void setId(int id) {
-        this.id = id;
+    public Builder setId(int id) {
+        film.fileId = id;
+        return this;
     }
 
     @Override
-    public void setName(String name) {
-        this.name = name;
+    public Builder setName(String name) {
+        film.name = name;
+        return this;
     }
 
     @Override
-    public void setDescription(String description) {
-        this.description = description;
+    public Builder setDescription(String description) {
+        film.description = description;
+        return this;
     }
 
     @Override
-    public void setYear(int year) {
-        this.year = year;
+    public Builder setYear(int year) {
+        film.year = year;
+        return this;
     }
 
     @Override
-    public void setGenreId(int genreId) {
-        this.genreId = genreId;
+    public Builder setGenreId(int genreId) {
+        film.genreId = genreId;
+        return this;
     }
 
     @Override
-    public void setMinimalAge(int minimalAge) {
-        this.minimalAge = minimalAge;
+    public Builder setMinimalAge(int minimalAge) {
+        film.minimalAge = minimalAge;
+        return this;
     }
 
     @Override
-    public void setDurationInTime(int durationInTime) {
-        this.durationInTime = durationInTime;
+    public Builder setDurationInTime(int durationInTime) {
+        film.durationInTime = durationInTime;
+        return this;
     }
 
     @Override
-    public void setFileId(int fileId) {
-        this.fileId = fileId;
+    public Builder setFileId(int fileId) {
+        film.fileId = fileId;
+        return this;
     }
 }
