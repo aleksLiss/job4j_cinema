@@ -1,4 +1,4 @@
-package model;
+package ru.job4j.cinema.model;
 
 public class Film implements Builder {
 
@@ -14,6 +14,38 @@ public class Film implements Builder {
 
     public Film build() {
         return film;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public int getGenreId() {
+        return genreId;
+    }
+
+    public int getMinimalAge() {
+        return minimalAge;
+    }
+
+    public int getDurationInTime() {
+        return durationInTime;
+    }
+
+    public int getFileId() {
+        return fileId;
     }
 
     @Override

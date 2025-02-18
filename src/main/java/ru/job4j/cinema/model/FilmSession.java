@@ -1,4 +1,4 @@
-package model;
+package ru.job4j.cinema.model;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
