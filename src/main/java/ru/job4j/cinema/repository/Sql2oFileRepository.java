@@ -22,7 +22,7 @@ public class Sql2oFileRepository implements FileRepository {
                     .addParameter("path", file.getPath());
             int generatedId = sql.executeUpdate().getKey(Integer.class);
             file.setId(generatedId);
-            return Optional.of(file);
+            return Optional.ofNullable(file);
         }
     }
 
