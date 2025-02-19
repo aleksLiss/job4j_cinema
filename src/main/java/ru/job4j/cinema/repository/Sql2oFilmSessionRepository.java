@@ -23,7 +23,7 @@ public class Sql2oFilmSessionRepository implements FilmSessionRepository {
                     """;
             int generatedId = connection.createQuery(query).executeUpdate().getKey(Integer.class);
             filmSession.setId(generatedId);
-            return Optional.of(filmSession);
+            return Optional.ofNullable(filmSession);
         }
     }
 
@@ -33,7 +33,7 @@ public class Sql2oFilmSessionRepository implements FilmSessionRepository {
             var sql = connection.createQuery("SELECT * FROM film_sessions WHERE id = :id")
                     .addParameter("id", id);
             FilmSession foundFilmSession = sql.setColumnMappings(FilmSession.COLUMN_MAPPING).executeAndFetchFirst(FilmSession.class);
-            return Optional.of(foundFilmSession);
+            return Optional.ofNullable(foundFilmSession);
         }
     }
 
