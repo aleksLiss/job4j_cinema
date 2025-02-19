@@ -1,5 +1,6 @@
 package ru.job4j.cinema.repository;
 
+import org.sql2o.Query;
 import org.sql2o.Sql2o;
 import ru.job4j.cinema.model.Film;
 
@@ -35,11 +36,18 @@ public class Sql2oFilmRepository implements FilmRepository {
     @Override
     public Optional<Film> create(Film film) {
         try (var connection = sql2o.open()) {
-            String query = """
+            String sql = """
                     INSERT INTO films (name, description, year, genre_id, minimal_age, duration_in_time, file_id)
                     VALUES (:name, :description, :year, :genreId, :minimalAge, :durationInTime, :fileId)""";
-            var sql = connection.createQuery(query);
-            int generatedId = sql.executeUpdate().getResult();
+            Query query = connection.createQuery(sql)
+                    .addParameter("name", film.getName())
+                    .addParameter("description", film.getDescription())
+                    .addParameter("year", film.getYear())
+                    .addParameter("genreId", film.getGenreId())
+                    .addParameter("minimalAge", film.getMinimalAge())
+                    .addParameter("durationInTime", film.getDurationInTime())
+                    .addParameter("fileId", film.getFileId());
+            int generatedId = query.executeUpdate().getKey(Integer.class);
             film.setId(generatedId);
             return Optional.of(film);
         }
