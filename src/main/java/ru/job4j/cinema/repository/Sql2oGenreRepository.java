@@ -17,10 +17,9 @@ public class Sql2oGenreRepository implements GenreRepository {
     @Override
     public Optional<Genre> create(Genre genre) {
         try (var connection = sql2o.open()) {
-            var sql = connection.createQuery("INSERT INTO genres(name) VALUES(:name)")
+            var sql = connection.createQuery("INSERT INTO genres (name) VALUES (:name)")
                     .addParameter("name", genre.getName());
-
-            int generatedId = sql.executeUpdate().getResult();
+            int generatedId = sql.executeUpdate().getKey(Integer.class);
             genre.setId(generatedId);
             return Optional.of(genre);
         }
