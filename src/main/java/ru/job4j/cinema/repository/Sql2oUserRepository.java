@@ -1,9 +1,11 @@
 package ru.job4j.cinema.repository;
 
+import org.sql2o.Query;
 import org.sql2o.Sql2o;
 import ru.job4j.cinema.model.User;
 
 import java.util.Collection;
+import java.util.Optional;
 
 public class Sql2oUserRepository implements UserRepository {
 
@@ -14,59 +16,67 @@ public class Sql2oUserRepository implements UserRepository {
     }
 
     @Override
-    public User create(User user) {
+    public Optional<User> create(User user) {
         try (var connection = sql2o.open()) {
-            String query = """
-                    INSERT INTO users(full_name, email, password)
-                    VALUES(:fullName, email, password)
+            String sql = """
+                    INSERT INTO users (full_name, email, password)
+                    VALUES (:fullName, email, password)
                     """;
-            int generatedId = connection.createQuery(query).executeUpdate().getResult();
+            Query query = connection.createQuery(sql)
+                    .addParameter("fullName", user.getFullName())
+                    .addParameter("email", user.getEmail())
+                    .addParameter("password", user.getPassword());
+            int generatedId = query.executeUpdate().getKey(Integer.class);
             user.setId(generatedId);
-            return user;
+            return Optional.of(user);
         }
     }
 
     @Override
-    public User findById(int id) {
+    public Optional<User> findById(int id) {
         try (var connection = sql2o.open()) {
             var sql = connection.createQuery("SELECT * FROM users WHERE id = :id")
                     .addParameter("id", id);
-            return sql.executeAndFetchFirst(User.class);
+            User foundUser = sql.setColumnMappings(User.COLUMN_MAPPING).executeAndFetchFirst(User.class);
+            return Optional.of(foundUser);
         }
     }
 
     @Override
     public boolean update(User user) {
+        boolean isUpdated;
         try (var connection = sql2o.open()) {
             String query = """
-                    "UPDATE users 
+                    "UPDATE users
                     SET full_name = :fullName, email = :email, password = :password"
                     WHERE id = :id
                     """;
             var sql = connection.createQuery(query)
-                    .addParameter("name", user.getFullName())
+                    .addParameter("fullName", user.getFullName())
                     .addParameter("email", user.getEmail())
-                    .addParameter("password", user.getPassword());
-            sql.executeUpdate();
-            return true;
+                    .addParameter("password", user.getPassword())
+                    .addParameter("id", user.getId());
+            isUpdated = sql.executeUpdate().getResult() > 0;
         }
+        return isUpdated;
     }
 
     @Override
     public boolean deleteById(int id) {
+        boolean isDeleted;
         try (var connection = sql2o.open()) {
             var sql = connection.createQuery("DELETE FROM users WHERE id = :id")
                     .addParameter("id", id);
-            sql.executeUpdate();
-            return true;
+            isDeleted = sql.executeUpdate().getResult() > 0;
         }
+        return isDeleted;
     }
 
     @Override
     public Collection<User> findAll() {
         try (var connection = sql2o.open()) {
             var sql = connection.createQuery("SELECT * FROM users");
-            return sql.executeAndFetch(User.class);
+            return sql.setColumnMappings(User.COLUMN_MAPPING).executeAndFetch(User.class);
         }
     }
 }
