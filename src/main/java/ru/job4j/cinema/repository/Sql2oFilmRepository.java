@@ -4,6 +4,7 @@ import org.sql2o.Sql2o;
 import ru.job4j.cinema.model.Film;
 
 import java.util.Collection;
+import java.util.Optional;
 
 public class Sql2oFilmRepository implements FilmRepository {
 
@@ -14,11 +15,12 @@ public class Sql2oFilmRepository implements FilmRepository {
     }
 
     @Override
-    public Film findById(int id) {
+    public Optional<Film> findById(int id) {
         try (var connection = sql2o.open()) {
             var sql = connection.createQuery("SELECT * FROM films WHERE id = :id")
                     .addParameter("id", id);
-            return sql.executeAndFetchFirst(Film.class);
+            Film foundFilm = sql.setColumnMappings(Film.COLUMN_MAPPING).executeAndFetchFirst(Film.class);
+            return Optional.of(foundFilm);
         }
     }
 
@@ -26,44 +28,45 @@ public class Sql2oFilmRepository implements FilmRepository {
     public Collection<Film> findAll() {
         try (var connection = sql2o.open()) {
             var sql = connection.createQuery("SELECT * FROM films");
-            return sql.executeAndFetch(Film.class);
+            return sql.setColumnMappings(Film.COLUMN_MAPPING).executeAndFetch(Film.class);
         }
     }
 
     @Override
-    public Film create(Film film) {
+    public Optional<Film> create(Film film) {
         try (var connection = sql2o.open()) {
             String query = """
-                    INSERT INTO films(name, description, year, genre_id, minimal_age, duration_in_time, file_id)
-                    VALUES(:name, :description, :year, :genreId, :minimalAge, :durationInTime, :fileId)""";
+                    INSERT INTO films (name, description, year, genre_id, minimal_age, duration_in_time, file_id)
+                    VALUES (:name, :description, :year, :genreId, :minimalAge, :durationInTime, :fileId)""";
             var sql = connection.createQuery(query);
             int generatedId = sql.executeUpdate().getResult();
             film.setId(generatedId);
-            return film;
+            return Optional.of(film);
         }
     }
 
     @Override
     public boolean deleteById(int id) {
+        boolean isDeleted;
         try (var connection = sql2o.open()) {
             var sql = connection.createQuery("DELETE FROM films WHERE id = :id")
                     .addParameter("id", id);
-            sql.executeUpdate();
-            return true;
+            isDeleted = sql.executeUpdate().getResult() > 0;
         }
+        return isDeleted;
     }
 
     @Override
     public boolean update(Film film) {
+        boolean isUpdated;
         try (var connection = sql2o.open()) {
             String query = """
                     UPDATE films
-                    SET id = :id, name = :name, description = :description, year = :year, genre_id = :genreId,
+                    SET name = :name, description = :description, year = :year, genre_id = :genreId,
                     minimal_age = :minimalAge, duration_in_time = :durationInTime, file_id = :fileId
-                    where id = :id
+                    WHERE id = :id
                     """;
             var sql = connection.createQuery(query)
-                    .addParameter("id", film.getId())
                     .addParameter("name", film.getName())
                     .addParameter("description", film.getDescription())
                     .addParameter("year", film.getYear())
@@ -72,8 +75,8 @@ public class Sql2oFilmRepository implements FilmRepository {
                     .addParameter("durationInTime", film.getDurationInTime())
                     .addParameter("fileId", film.getFileId())
                     .addParameter("id", film.getId());
-            sql.executeAndFetch(Film.class);
-            return true;
+            isUpdated = sql.executeUpdate().getResult() > 0;
         }
+        return isUpdated;
     }
 }
