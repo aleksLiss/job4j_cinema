@@ -3,12 +3,13 @@ package ru.job4j.cinema.repository;
 import ru.job4j.cinema.model.FilmSession;
 
 import java.util.Collection;
+import java.util.Optional;
 
 public interface FilmSessionRepository {
 
-    FilmSession create(FilmSession filmSession);
+    Optional<FilmSession> create(FilmSession filmSession);
 
-    FilmSession findById(int id);
+    Optional<FilmSession> findById(int id);
 
     boolean update(FilmSession filmSession);
 
