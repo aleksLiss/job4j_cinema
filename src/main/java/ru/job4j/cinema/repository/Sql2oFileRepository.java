@@ -32,7 +32,7 @@ public class Sql2oFileRepository implements FileRepository {
             var sql = connection.createQuery("SELECT * FROM files WHERE id = :id")
                     .addParameter("id", id);
             File foundFile = sql.setColumnMappings(File.COLUMN_MAPPING).executeAndFetchFirst(File.class);
-            return Optional.of(foundFile);
+            return Optional.ofNullable(foundFile);
         }
     }
 
