@@ -28,7 +28,7 @@ public class Sql2oUserRepository implements UserRepository {
                     .addParameter("password", user.getPassword());
             int generatedId = query.executeUpdate().getKey(Integer.class);
             user.setId(generatedId);
-            return Optional.of(user);
+            return Optional.ofNullable(user);
         }
     }
 
@@ -38,7 +38,7 @@ public class Sql2oUserRepository implements UserRepository {
             var sql = connection.createQuery("SELECT * FROM users WHERE id = :id")
                     .addParameter("id", id);
             User foundUser = sql.setColumnMappings(User.COLUMN_MAPPING).executeAndFetchFirst(User.class);
-            return Optional.of(foundUser);
+            return Optional.ofNullable(foundUser);
         }
     }
 
