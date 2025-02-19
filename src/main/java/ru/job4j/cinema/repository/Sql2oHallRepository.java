@@ -4,6 +4,7 @@ import org.sql2o.Sql2o;
 import ru.job4j.cinema.model.Hall;
 
 import java.util.Collection;
+import java.util.Optional;
 
 public class Sql2oHallRepository implements HallRepository {
 
@@ -14,31 +15,36 @@ public class Sql2oHallRepository implements HallRepository {
     }
 
     @Override
-    public Hall create(Hall hall) {
+    public Optional<Hall> create(Hall hall) {
         try (var connection = sql2o.open()) {
             String query = """
-                    INSERT INTO halls(name, row_count, place_count, description)
-                    VALUES(:name, :rowCount, :placeCount, :description)
+                    INSERT INTO halls (name, row_count, place_count, description)
+                    VALUES (:name, :rowCount, :placeCount, :description)
                     """;
-            var sql = connection.createQuery(query);
-            int generatedId = sql.executeUpdate().getResult();
+            var sql = connection.createQuery(query)
+                    .addParameter("name", hall.getName())
+                    .addParameter("rowCount", hall.getRowCount())
+                    .addParameter("placeCount", hall.getPlaceCount())
+                    .addParameter("description", hall.getDescription());
+            int generatedId = sql.executeUpdate().getKey(Integer.class);
             hall.setId(generatedId);
-            return hall;
+            return Optional.of(hall);
         }
     }
 
     @Override
-    public Hall findById(int id) {
+    public Optional<Hall> findById(int id) {
         try (var connection = sql2o.open()) {
             var sql = connection.createQuery("SELECT * FROM halls WHERE id = :id")
                     .addParameter("id", id);
-
-            return sql.executeAndFetchFirst(Hall.class);
+            Hall foundHall = sql.setColumnMappings(Hall.COLUMN_MAPPING).executeAndFetchFirst(Hall.class);
+            return Optional.of(foundHall);
         }
     }
 
     @Override
     public boolean update(Hall hall) {
+        boolean isUpdated;
         try (var connection = sql2o.open()) {
             String query = """
                     UPDATE halls
@@ -50,26 +56,27 @@ public class Sql2oHallRepository implements HallRepository {
                     .addParameter("rowCount", hall.getRowCount())
                     .addParameter("placeCount", hall.getPlaceCount())
                     .addParameter("description", hall.getDescription());
-            sql.executeUpdate();
-            return true;
+            isUpdated = sql.executeUpdate().getResult() > 0;
         }
+        return isUpdated;
     }
 
     @Override
     public boolean deleteById(int id) {
+        boolean isDeleted;
         try (var connection = sql2o.open()) {
             var sql = connection.createQuery("DELETE FROM halls WHERE id = :id")
                     .addParameter("id", id);
-            sql.executeUpdate();
-            return true;
+            isDeleted = sql.executeUpdate().getResult() > 0;
         }
+        return isDeleted;
     }
 
     @Override
     public Collection<Hall> findAll() {
         try (var connection = sql2o.open()) {
             var sql = connection.createQuery("SELECT * FROM halls");
-            return sql.executeAndFetch(Hall.class);
+            return sql.setColumnMappings(Hall.COLUMN_MAPPING).executeAndFetch(Hall.class);
         }
     }
 }
