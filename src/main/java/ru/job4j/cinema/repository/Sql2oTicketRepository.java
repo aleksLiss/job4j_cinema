@@ -29,7 +29,7 @@ public class Sql2oTicketRepository implements TicketRepository {
                     .addParameter("userId", ticket.getUserId());
             int generatedId = query.executeUpdate().getKey(Integer.class);
             ticket.setId(generatedId);
-            return Optional.of(ticket);
+            return Optional.ofNullable(ticket);
         }
     }
 
@@ -39,7 +39,7 @@ public class Sql2oTicketRepository implements TicketRepository {
             var sql = connection.createQuery("SELECT * FROM tickets WHERE id = :id")
                     .addParameter("id", id);
             Ticket foundTicket = sql.setColumnMappings(Ticket.COLUMN_MAPPING).executeAndFetchFirst(Ticket.class);
-            return Optional.of(foundTicket);
+            return Optional.ofNullable(foundTicket);
         }
     }
 
