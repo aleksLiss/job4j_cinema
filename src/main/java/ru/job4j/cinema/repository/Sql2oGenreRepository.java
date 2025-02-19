@@ -21,7 +21,7 @@ public class Sql2oGenreRepository implements GenreRepository {
                     .addParameter("name", genre.getName());
             int generatedId = sql.executeUpdate().getKey(Integer.class);
             genre.setId(generatedId);
-            return Optional.of(genre);
+            return Optional.ofNullable(genre);
         }
     }
 
@@ -54,7 +54,7 @@ public class Sql2oGenreRepository implements GenreRepository {
             var sql = connection.createQuery("SELECT * FROM genres WHERE id = :id")
                     .addParameter("id", id);
             Genre foundGenre = sql.setColumnMappings(Genre.COLUMN_MAPPING).executeAndFetchFirst(Genre.class);
-            return Optional.of(foundGenre);
+            return Optional.ofNullable(foundGenre);
         }
     }
 
