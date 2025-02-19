@@ -28,7 +28,7 @@ public class Sql2oHallRepository implements HallRepository {
                     .addParameter("description", hall.getDescription());
             int generatedId = sql.executeUpdate().getKey(Integer.class);
             hall.setId(generatedId);
-            return Optional.of(hall);
+            return Optional.ofNullable(hall);
         }
     }
 
@@ -38,7 +38,7 @@ public class Sql2oHallRepository implements HallRepository {
             var sql = connection.createQuery("SELECT * FROM halls WHERE id = :id")
                     .addParameter("id", id);
             Hall foundHall = sql.setColumnMappings(Hall.COLUMN_MAPPING).executeAndFetchFirst(Hall.class);
-            return Optional.of(foundHall);
+            return Optional.ofNullable(foundHall);
         }
     }
 
