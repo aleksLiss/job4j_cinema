@@ -4,6 +4,7 @@ import org.sql2o.Sql2o;
 import ru.job4j.cinema.model.FilmSession;
 
 import java.util.Collection;
+import java.util.Optional;
 
 public class Sql2oFilmSessionRepository implements FilmSessionRepository {
 
@@ -14,29 +15,31 @@ public class Sql2oFilmSessionRepository implements FilmSessionRepository {
     }
 
     @Override
-    public FilmSession create(FilmSession filmSession) {
+    public Optional<FilmSession> create(FilmSession filmSession) {
         try (var connection = sql2o.open()) {
             String query = """
                     INSERT INTO film_sessions(film_id, halls_id, start_time, end_time, price)
                     VALUES(:filmId, :hallsId, :startTime, :endTime, :price)
                     """;
-            int generatedId = connection.createQuery(query).executeUpdate().getResult();
+            int generatedId = connection.createQuery(query).executeUpdate().getKey(Integer.class);
             filmSession.setId(generatedId);
-            return filmSession;
+            return Optional.of(filmSession);
         }
     }
 
     @Override
-    public FilmSession findById(int id) {
+    public Optional<FilmSession> findById(int id) {
         try (var connection = sql2o.open()) {
             var sql = connection.createQuery("SELECT * FROM film_sessions WHERE id = :id")
                     .addParameter("id", id);
-            return sql.executeAndFetchFirst(FilmSession.class);
+            FilmSession foundFilmSession = sql.setColumnMappings(FilmSession.COLUMN_MAPPING).executeAndFetchFirst(FilmSession.class);
+            return Optional.of(foundFilmSession);
         }
     }
 
     @Override
     public boolean update(FilmSession filmSession) {
+        boolean isUpdated;
         try (var connection = sql2o.open()) {
             String query = """
                     UPDATE film_sessions
@@ -48,27 +51,29 @@ public class Sql2oFilmSessionRepository implements FilmSessionRepository {
                     .addParameter("hallsId", filmSession.getHallsId())
                     .addParameter("startTime", filmSession.getStartTime())
                     .addParameter("endTime", filmSession.getEndTime())
-                    .addParameter("price", filmSession.getPrice());
-            sql.executeUpdate();
-            return true;
+                    .addParameter("price", filmSession.getPrice())
+                    .addParameter("id", filmSession.getId());
+            isUpdated = sql.executeUpdate().getResult() > 0;
         }
+        return isUpdated;
     }
 
     @Override
     public boolean deleteById(int id) {
+        boolean isDeleted;
         try (var connection = sql2o.open()) {
             var sql = connection.createQuery("DELETE FROM film_sessions WHERE id = :id")
                     .addParameter("id", id);
-            sql.executeUpdate();
-            return true;
+            isDeleted = sql.executeUpdate().getResult() > 0;
         }
+        return isDeleted;
     }
 
     @Override
     public Collection<FilmSession> findAll() {
         try (var connection = sql2o.open()) {
             var sql = connection.createQuery("SELECT * FROM film_sessions");
-            return sql.executeAndFetch(FilmSession.class);
+            return sql.setColumnMappings(FilmSession.COLUMN_MAPPING).executeAndFetch(FilmSession.class);
         }
     }
 }

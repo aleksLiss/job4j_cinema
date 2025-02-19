@@ -1,9 +1,11 @@
 package ru.job4j.cinema.repository;
 
+import org.sql2o.Query;
 import org.sql2o.Sql2o;
 import ru.job4j.cinema.model.Ticket;
 
 import java.util.Collection;
+import java.util.Optional;
 
 public class Sql2oTicketRepository implements TicketRepository {
 
@@ -14,29 +16,36 @@ public class Sql2oTicketRepository implements TicketRepository {
     }
 
     @Override
-    public Ticket create(Ticket ticket) {
+    public Optional<Ticket> create(Ticket ticket) {
         try (var connection = sql2o.open()) {
-            String query = """
-                    INSERT INTO tickets(session_id, row_number, place_number, user_id)
-                    VALUES(:sessionId, :rowNumber, :placeNumber, :userId)
+            String sql = """
+                    INSERT INTO tickets (session_id, row_number, place_number, user_id)
+                    VALUES (:sessionId, :rowNumber, :placeNumber, :userId)
                     """;
-            int generatedId = connection.createQuery(query).executeUpdate().getResult();
+            Query query = connection.createQuery(sql)
+                    .addParameter("sessionId", ticket.getSessionId())
+                    .addParameter("rowNumber", ticket.getRowNumber())
+                    .addParameter("placeNumber", ticket.getPlaceNumber())
+                    .addParameter("userId", ticket.getUserId());
+            int generatedId = query.executeUpdate().getKey(Integer.class);
             ticket.setId(generatedId);
-            return ticket;
+            return Optional.of(ticket);
         }
     }
 
     @Override
-    public Ticket findById(int id) {
+    public Optional<Ticket> findById(int id) {
         try (var connection = sql2o.open()) {
             var sql = connection.createQuery("SELECT * FROM tickets WHERE id = :id")
                     .addParameter("id", id);
-            return sql.executeAndFetchFirst(Ticket.class);
+            Ticket foundTicket = sql.setColumnMappings(Ticket.COLUMN_MAPPING).executeAndFetchFirst(Ticket.class);
+            return Optional.of(foundTicket);
         }
     }
 
     @Override
     public boolean update(Ticket ticket) {
+        boolean isUpdated;
         try (var connection = sql2o.open()) {
             String query = """
                     UPDATE tickets
@@ -47,27 +56,29 @@ public class Sql2oTicketRepository implements TicketRepository {
                     .addParameter("sessionId", ticket.getSessionId())
                     .addParameter("rowNumber", ticket.getRowNumber())
                     .addParameter("placeNumber", ticket.getPlaceNumber())
-                    .addParameter("userId", ticket.getUserId());
-            sql.executeUpdate();
-            return true;
+                    .addParameter("userId", ticket.getUserId())
+                    .addParameter("id", ticket.getId());
+            isUpdated = sql.executeUpdate().getResult() > 0;
         }
+        return isUpdated;
     }
 
     @Override
     public boolean deleteById(int id) {
+        boolean isDeleted;
         try (var connection = sql2o.open()) {
             var query = connection.createQuery("DELETE FROM tickets WHERE id = :id")
                     .addParameter("id", id);
-            query.executeUpdate();
-            return true;
+            isDeleted = query.executeUpdate().getResult() > 0;
         }
+        return isDeleted;
     }
 
     @Override
     public Collection<Ticket> findAll() {
         try (var connection = sql2o.open()) {
             var sql = connection.createQuery("SELECT * FROM tickets");
-            return sql.executeAndFetch(Ticket.class);
+            return sql.setColumnMappings(Ticket.COLUMN_MAPPING).executeAndFetch(Ticket.class);
         }
     }
 }

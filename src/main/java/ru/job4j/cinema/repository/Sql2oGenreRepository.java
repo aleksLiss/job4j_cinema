@@ -4,6 +4,7 @@ import org.sql2o.Sql2o;
 import ru.job4j.cinema.model.Genre;
 
 import java.util.Collection;
+import java.util.Optional;
 
 public class Sql2oGenreRepository implements GenreRepository {
 
@@ -14,44 +15,46 @@ public class Sql2oGenreRepository implements GenreRepository {
     }
 
     @Override
-    public Genre create(Genre genre) {
+    public Optional<Genre> create(Genre genre) {
         try (var connection = sql2o.open()) {
-            var sql = connection.createQuery("INSERT INTO genres(name) VALUES(:name)")
+            var sql = connection.createQuery("INSERT INTO genres (name) VALUES (:name)")
                     .addParameter("name", genre.getName());
-
-            int generatedId = sql.executeUpdate().getResult();
+            int generatedId = sql.executeUpdate().getKey(Integer.class);
             genre.setId(generatedId);
-            return genre;
+            return Optional.of(genre);
         }
     }
 
     @Override
     public boolean update(Genre genre) {
+        boolean isUpdated;
         try (var connection = sql2o.open()) {
             var sql = connection.createQuery("UPDATE genres SET name = :name WHERE id = :id")
                     .addParameter("name", genre.getName())
                     .addParameter("id", genre.getId());
-            sql.executeUpdate();
-            return true;
+            isUpdated = sql.executeUpdate().getResult() > 0;
         }
+        return isUpdated;
     }
 
     @Override
     public boolean deleteById(int id) {
+        boolean isDeleted;
         try (var connection = sql2o.open()) {
             var sql = connection.createQuery("DELETE FROM genres WHERE id = :id")
                     .addParameter("id", id);
-            sql.executeUpdate();
-            return true;
+            isDeleted = sql.executeUpdate().getResult() > 0;
         }
+        return isDeleted;
     }
 
     @Override
-    public Genre findById(int id) {
+    public Optional<Genre> findById(int id) {
         try (var connection = sql2o.open()) {
             var sql = connection.createQuery("SELECT * FROM genres WHERE id = :id")
                     .addParameter("id", id);
-            return sql.executeAndFetchFirst(Genre.class);
+            Genre foundGenre = sql.setColumnMappings(Genre.COLUMN_MAPPING).executeAndFetchFirst(Genre.class);
+            return Optional.of(foundGenre);
         }
     }
 
@@ -59,7 +62,7 @@ public class Sql2oGenreRepository implements GenreRepository {
     public Collection<Genre> findAll() {
         try (var connection = sql2o.open()) {
             var sql = connection.createQuery("SELECT * FROM genres");
-            return sql.executeAndFetch(Genre.class);
+            return sql.setColumnMappings(Genre.COLUMN_MAPPING).executeAndFetch(Genre.class);
         }
     }
 }

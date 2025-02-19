@@ -1,15 +1,10 @@
 package ru.job4j.cinema.repository;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.sql2o.Sql2o;
 import ru.job4j.cinema.model.File;
 
-import java.sql.Connection;
 import java.util.Collection;
-import java.util.List;
+import java.util.Optional;
 
 public class Sql2oFileRepository implements FileRepository {
 
@@ -20,24 +15,24 @@ public class Sql2oFileRepository implements FileRepository {
     }
 
     @Override
-    public File create(File file) {
+    public Optional<File> create(File file) {
         try (var connection = sql2o.open()) {
-            var sql = connection.createQuery("INSERT INTO files(id, name, path) VALUES(:id, :name, :path)")
-                    .addParameter("id", file.getId())
+            var sql = connection.createQuery("INSERT INTO files (name, path) VALUES (:name, :path)", true)
                     .addParameter("name", file.getName())
                     .addParameter("path", file.getPath());
-            int generatedId = sql.executeUpdate().getResult();
+            int generatedId = sql.executeUpdate().getKey(Integer.class);
             file.setId(generatedId);
-            return file;
+            return Optional.of(file);
         }
     }
 
     @Override
-    public File findById(int id) {
+    public Optional<File> findById(int id) {
         try (var connection = sql2o.open()) {
             var sql = connection.createQuery("SELECT * FROM files WHERE id = :id")
                     .addParameter("id", id);
-            return sql.executeAndFetchFirst(File.class);
+            File foundFile = sql.setColumnMappings(File.COLUMN_MAPPING).executeAndFetchFirst(File.class);
+            return Optional.of(foundFile);
         }
     }
 
@@ -45,18 +40,20 @@ public class Sql2oFileRepository implements FileRepository {
     public Collection<File> findAll() {
         try (var connection = sql2o.open()) {
             var sql = connection.createQuery("SELECT * FROM files");
-            return sql.executeAndFetch(File.class);
+            return sql.setColumnMappings(File.COLUMN_MAPPING).executeAndFetch(File.class);
         }
     }
 
     @Override
     public boolean deleteById(int id) {
+        boolean isDeleted;
         try (var connection = sql2o.open()) {
-            var sql = connection.createQuery("DELETE FORM files WHERE id = :id")
+            var sql = connection.createQuery("DELETE FROM files WHERE id = :id")
                     .addParameter("id", id);
             sql.executeUpdate();
-            return true;
+            isDeleted = connection.getResult() != 0;
         }
+        return isDeleted;
     }
 
     @Override
@@ -66,8 +63,8 @@ public class Sql2oFileRepository implements FileRepository {
                     .addParameter("name", file.getName())
                     .addParameter("path", file.getPath())
                     .addParameter("id", file.getId());
-            sql.executeAndFetch(File.class);
-            return true;
+            int affectedRows = sql.executeUpdate().getResult();
+            return affectedRows > 0;
         }
     }
 }
