@@ -37,7 +37,7 @@ public class Sql2oFilmRepository implements FilmRepository {
     public Optional<Film> create(Film film) {
         try (var connection = sql2o.open()) {
             String sql = """
-                    INSERT INTO films (name, description, year, genre_id, minimal_age, duration_in_minutes, file_id)
+                    INSERT INTO films (name, description, "year", genre_id, minimal_age, duration_in_minutes, file_id)
                     VALUES (:name, :description, :year, :genreId, :minimalAge, :durationInMinutes, :fileId)""";
             Query query = connection.createQuery(sql)
                     .addParameter("name", film.getName())
@@ -70,7 +70,7 @@ public class Sql2oFilmRepository implements FilmRepository {
         try (var connection = sql2o.open()) {
             String query = """
                     UPDATE films
-                    SET name = :name, description = :description, year = :year, genre_id = :genreId,
+                    SET name = :name, description = :description, "year" = :year, genre_id = :genreId,
                     minimal_age = :minimalAge, duration_in_minutes = :durationInMinutes, file_id = :fileId
                     WHERE id = :id
                     """;
