@@ -55,7 +55,8 @@ public class Sql2oHallRepository implements HallRepository {
                     .addParameter("name", hall.getName())
                     .addParameter("rowCount", hall.getRowCount())
                     .addParameter("placeCount", hall.getPlaceCount())
-                    .addParameter("description", hall.getDescription());
+                    .addParameter("description", hall.getDescription())
+                    .addParameter("id", hall.getId());
             isUpdated = sql.executeUpdate().getResult() > 0;
         }
         return isUpdated;
