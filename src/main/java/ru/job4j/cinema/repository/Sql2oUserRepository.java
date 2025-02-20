@@ -20,7 +20,7 @@ public class Sql2oUserRepository implements UserRepository {
         try (var connection = sql2o.open()) {
             String sql = """
                     INSERT INTO users (full_name, email, password)
-                    VALUES (:fullName, email, password)
+                    VALUES (:fullName, :email, :password)
                     """;
             Query query = connection.createQuery(sql)
                     .addParameter("fullName", user.getFullName())
@@ -47,8 +47,8 @@ public class Sql2oUserRepository implements UserRepository {
         boolean isUpdated;
         try (var connection = sql2o.open()) {
             String query = """
-                    "UPDATE users
-                    SET full_name = :fullName, email = :email, password = :password"
+                    UPDATE users
+                    SET full_name = :fullName, email = :email, password = :password
                     WHERE id = :id
                     """;
             var sql = connection.createQuery(query)
