@@ -11,7 +11,7 @@ public class Film implements Builder {
             "year", "year",
             "genre_id", "genreId",
             "minimal_age", "minimalAge",
-            "duration_in_time", "durationInTime",
+            "duration_in_minutes", "durationInMinutes",
             "file_id", "fileId"
             );
 
@@ -21,7 +21,7 @@ public class Film implements Builder {
     private int year;
     private int genreId;
     private int minimalAge;
-    private int durationInTime;
+    private int durationInMinutes;
     private int fileId;
     private final Film film = new Film();
 
@@ -54,7 +54,7 @@ public class Film implements Builder {
     }
 
     public int getDurationInTime() {
-        return durationInTime;
+        return durationInMinutes;
     }
 
     public int getFileId() {
@@ -98,8 +98,8 @@ public class Film implements Builder {
     }
 
     @Override
-    public Builder setDurationInTime(int durationInTime) {
-        film.durationInTime = durationInTime;
+    public Builder setDurationInTime(int durationInMinutes) {
+        film.durationInMinutes = durationInMinutes;
         return this;
     }
 
