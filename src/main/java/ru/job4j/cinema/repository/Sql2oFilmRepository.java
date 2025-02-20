@@ -37,15 +37,15 @@ public class Sql2oFilmRepository implements FilmRepository {
     public Optional<Film> create(Film film) {
         try (var connection = sql2o.open()) {
             String sql = """
-                    INSERT INTO films (name, description, year, genre_id, minimal_age, duration_in_time, file_id)
-                    VALUES (:name, :description, :year, :genreId, :minimalAge, :durationInTime, :fileId)""";
+                    INSERT INTO films (name, description, year, genre_id, minimal_age, duration_in_minutes, file_id)
+                    VALUES (:name, :description, :year, :genreId, :minimalAge, :durationInMinutes, :fileId)""";
             Query query = connection.createQuery(sql)
                     .addParameter("name", film.getName())
                     .addParameter("description", film.getDescription())
                     .addParameter("year", film.getYear())
                     .addParameter("genreId", film.getGenreId())
                     .addParameter("minimalAge", film.getMinimalAge())
-                    .addParameter("durationInTime", film.getDurationInTime())
+                    .addParameter("durationInMinutes", film.getDurationInTime())
                     .addParameter("fileId", film.getFileId());
             int generatedId = query.executeUpdate().getKey(Integer.class);
             film.setId(generatedId);
@@ -71,7 +71,7 @@ public class Sql2oFilmRepository implements FilmRepository {
             String query = """
                     UPDATE films
                     SET name = :name, description = :description, year = :year, genre_id = :genreId,
-                    minimal_age = :minimalAge, duration_in_time = :durationInTime, file_id = :fileId
+                    minimal_age = :minimalAge, duration_in_minutes = :durationInMinutes, file_id = :fileId
                     WHERE id = :id
                     """;
             var sql = connection.createQuery(query)
@@ -80,7 +80,7 @@ public class Sql2oFilmRepository implements FilmRepository {
                     .addParameter("year", film.getYear())
                     .addParameter("genreId", film.getGenreId())
                     .addParameter("minimalAge", film.getMinimalAge())
-                    .addParameter("durationInTime", film.getDurationInTime())
+                    .addParameter("durationInMinutes", film.getDurationInTime())
                     .addParameter("fileId", film.getFileId())
                     .addParameter("id", film.getId());
             isUpdated = sql.executeUpdate().getResult() > 0;
