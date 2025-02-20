@@ -21,7 +21,14 @@ public class Sql2oFilmSessionRepository implements FilmSessionRepository {
                     INSERT INTO film_sessions(film_id, halls_id, start_time, end_time, price)
                     VALUES(:filmId, :hallsId, :startTime, :endTime, :price)
                     """;
-            int generatedId = connection.createQuery(query).executeUpdate().getKey(Integer.class);
+            int generatedId = connection.createQuery(query)
+                    .addParameter("filmId", filmSession.getFilmId())
+                    .addParameter("hallsId", filmSession.getHallsId())
+                    .addParameter("startTime", filmSession.getStartTime())
+                    .addParameter("endTime", filmSession.getEndTime())
+                    .addParameter("price", filmSession.getPrice())
+                    .executeUpdate()
+                    .getKey(Integer.class);
             filmSession.setId(generatedId);
             return Optional.ofNullable(filmSession);
         }
