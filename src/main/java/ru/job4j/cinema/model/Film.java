@@ -2,7 +2,7 @@ package ru.job4j.cinema.model;
 
 import java.util.Map;
 
-public class Film implements Builder {
+public class Film {
 
     public static final Map<String, String> COLUMN_MAPPING = Map.of(
             "id", "id",
@@ -11,9 +11,9 @@ public class Film implements Builder {
             "year", "year",
             "genre_id", "genreId",
             "minimal_age", "minimalAge",
-            "duration_in_time", "durationInTime",
+            "duration_in_minutes", "durationInMinutes",
             "file_id", "fileId"
-            );
+    );
 
     private int id;
     private String name;
@@ -21,12 +21,18 @@ public class Film implements Builder {
     private int year;
     private int genreId;
     private int minimalAge;
-    private int durationInTime;
+    private int durationInMinutes;
     private int fileId;
-    private final Film film = new Film();
 
-    public Film build() {
-        return film;
+    public Film(int id, String name, String description, int year, int genreId, int minimalAge, int durationInMinutes, int fileId) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.year = year;
+        this.genreId = genreId;
+        this.minimalAge = minimalAge;
+        this.durationInMinutes = durationInMinutes;
+        this.fileId = fileId;
     }
 
     public int getId() {
@@ -54,58 +60,14 @@ public class Film implements Builder {
     }
 
     public int getDurationInTime() {
-        return durationInTime;
+        return durationInMinutes;
     }
 
     public int getFileId() {
         return fileId;
     }
 
-    @Override
-    public Builder setId(int id) {
-        film.fileId = id;
-        return this;
-    }
-
-    @Override
-    public Builder setName(String name) {
-        film.name = name;
-        return this;
-    }
-
-    @Override
-    public Builder setDescription(String description) {
-        film.description = description;
-        return this;
-    }
-
-    @Override
-    public Builder setYear(int year) {
-        film.year = year;
-        return this;
-    }
-
-    @Override
-    public Builder setGenreId(int genreId) {
-        film.genreId = genreId;
-        return this;
-    }
-
-    @Override
-    public Builder setMinimalAge(int minimalAge) {
-        film.minimalAge = minimalAge;
-        return this;
-    }
-
-    @Override
-    public Builder setDurationInTime(int durationInTime) {
-        film.durationInTime = durationInTime;
-        return this;
-    }
-
-    @Override
-    public Builder setFileId(int fileId) {
-        film.fileId = fileId;
-        return this;
+    public void setId(int id) {
+        this.id = id;
     }
 }
