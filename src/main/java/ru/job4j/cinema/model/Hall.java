@@ -14,15 +14,15 @@ public class Hall {
     );
 
     private int id;
-    private int name;
+    private String name;
     private int rowCount;
     private int placeCount;
-    private int description;
+    private String description;
 
     public Hall() {
     }
 
-    public Hall(int id, int name, int rowCount, int placeCount, int description) {
+    public Hall(int id, String name, int rowCount, int placeCount, String description) {
         this.id = id;
         this.name = name;
         this.rowCount = rowCount;
@@ -38,11 +38,11 @@ public class Hall {
         this.id = id;
     }
 
-    public int getName() {
+    public String getName() {
         return name;
     }
 
-    public void setName(int name) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -62,11 +62,11 @@ public class Hall {
         this.placeCount = placeCount;
     }
 
-    public int getDescription() {
+    public String getDescription() {
         return description;
     }
 
-    public void setDescription(int description) {
+    public void setDescription(String description) {
         this.description = description;
     }
 
