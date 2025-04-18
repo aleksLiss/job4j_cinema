@@ -1,8 +1,20 @@
 package ru.job4j.cinema.model;
 
+import java.util.Map;
 import java.util.Objects;
 
 public class Film implements Builder {
+
+    public static final Map<String, String> COLUMN_MAPPING = Map.of(
+            "id", "id",
+            "name", "name",
+            "description", "description",
+            "year", "year",
+            "genre_id", "genreId",
+            "minimal_age", "minimalAge",
+            "duration_in_minutes", "durationInMinutes",
+            "file_id", "fileId"
+    );
 
     private int id;
     private String name;
@@ -24,6 +36,38 @@ public class Film implements Builder {
         this.minimalAge = minimalAge;
         this.durationInMinutes = durationInMinutes;
         this.fileId = fileId;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public int getGenreId() {
+        return genreId;
+    }
+
+    public int getMinimalAge() {
+        return minimalAge;
+    }
+
+    public int getDurationInMinutes() {
+        return durationInMinutes;
+    }
+
+    public int getFileId() {
+        return fileId;
     }
 
     @Override
