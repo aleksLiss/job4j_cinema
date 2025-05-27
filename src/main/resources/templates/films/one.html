@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:include="blocks/header :: header"></head>
+<body>
+<div th:replace="blocks/navbar :: navbar"></div>
+<div class="film">
+    <div class="title" th:text="${film.name}"></div>
+    <div class="title" th:text="${film.genre}"></div>
+    <div th:text="${film.description}"></div>
+    <img class="poster" th:src="@{${film.pathToFile}}" alt=""/>
+</div>
+<div th:include="blocks/footer :: footer"></div>
+</body>
+</html>

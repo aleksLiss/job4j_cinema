@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="blocks/header :: header"></head>
+<body>
+<div class="navigation" th:replace="blocks/navbar :: navbar"></div>
+<div class="sessions">
+    <div th:each="filmSession : ${sessions}" class="session">
+        <div class="session">
+            <a class="title" th:text="${filmSession.startTime}"
+               th:href="@{/sessions/{filmSessionId}(filmSessionId=${filmSession.id})}"></a>
+            <div class="title"
+                 th:text="${filmSession.filmName}"></div>
+            <div class="description" th:text="${filmSession.genre}"></div>
+        </div>
+    </div>
+</div>
+<footer class="footer" th:include="blocks/footer :: footer"></footer>
+</body>
+</html>

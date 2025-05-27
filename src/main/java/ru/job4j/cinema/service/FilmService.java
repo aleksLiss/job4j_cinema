@@ -10,5 +10,5 @@ public interface FilmService {
 
     Collection<FilmDto> getAll();
 
-    Optional<FilmDto> getOne();
+    Optional<FilmDto> getOne(int id);
 }
