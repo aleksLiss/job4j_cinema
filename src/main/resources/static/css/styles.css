@@ -1,0 +1,44 @@
+        .session {
+            text-align: center;
+            margin: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .date {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        .title {
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+        .description {
+            font-size: 1em;
+            color: #555;
+        }
+        .footer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100px;
+        }
+        .container {
+            display: flex;
+            justify-content: start;
+            gap: 10px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: #f0f0f0;
+        }
+        .navbar-nav {
+             font-size: 18px;
+             padding: 5px 20px;
+             text-align: right;
+        }
+        .nv {
+            display: flex;           /* размещаем элементы в строку */
+            justify-content: right; /* выравниваем по правому краю */
+            gap: 10px;               /* расстояние между элементами (опционально) */
+            border-radius: 4px;
+        }

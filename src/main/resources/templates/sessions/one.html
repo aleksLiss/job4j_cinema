@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="blocks/header :: header">
+</head>
+<body>
+<div th:replace="blocks/navbar :: navbar"></div>
+<div class="film">
+    <label>Фильм: </label>
+    <div th:text="${ses.filmName}"></div>
+    <label>Начало: </label>
+    <div th:text="${ses.startTime}"></div>
+    <label>Описание: </label>
+    <div th:text="${ses.description}"></div>
+    <label>Зал: </label>
+    <div th:text="${ses.hall.name}"></div>
+    <img class="poster" th:src="@{${ses.pathToFile}}" alt=""/>
+    <form class="ticket-buy" th:action="@{/sessions/{id}(id=${id})}" method="post" enctype="multipart/form-data">
+        <div class="">
+            <label for="seat-row">Ряд: </label>
+            <select id="seat-row" name="seat-row" required>
+                <option th:each="i: ${#numbers.sequence(1, seats.get(0))}" th:value="${i}" th:text="${i}">
+            </select>
+        </div>
+        <div class="">
+            <label for="seat-place">Место: </label>
+            <select id="seat-place" name="seatPlace" required>
+                <option th:each="i: ${#numbers.sequence(1, seats.get(1))}" th:value="${i}" th:text="${i}">
+            </select>
+        </div>
+        <div class="buttons">
+            <button type="submit" class="buy">Купить</button>
+            <button th:href="@{/}">Отмена</button>
+        </div>
+    </form>
+</div>
+<div th:include="blocks/footer :: footer"></div>
+</body>

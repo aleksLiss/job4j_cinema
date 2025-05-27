@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:include="blocks/header :: header"></head>
+<body>
+<div th:replace="blocks/navbar :: navbar"></div>
+    <div class="sessions">
+        <div th:each="film : ${films}" class="session">
+            <div th:text="${film.name}"></div>
+        </div>
+    </div>
+<div th:include="blocks/footer :: footer"></div>
+</body>
+</html>
