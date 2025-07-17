@@ -13,8 +13,6 @@ public interface TicketRepository {
 
     Optional<Ticket> save(Ticket ticket);
 
-    boolean update(Ticket ticket);
-
     boolean deleteById(int id);
 
 }
