@@ -15,17 +15,20 @@
     <div th:text="${ses.hall.name}"></div>
     <img class="poster" th:src="@{${ses.pathToFile}}" alt=""/>
     <form class="ticket-buy" th:action="@{/sessions/{id}(id=${id})}" method="post" enctype="multipart/form-data">
-        <div class="">
-            <label for="seat-row">Ряд: </label>
-            <select id="seat-row" name="seat-row" required>
+        <div class="seat-row">
+            <label for="rowNumber">Ряд: </label>
+            <select id="rowNumber" name="rowNumber" required>
                 <option th:each="i: ${#numbers.sequence(1, seats.get(0))}" th:value="${i}" th:text="${i}">
             </select>
         </div>
-        <div class="">
-            <label for="seat-place">Место: </label>
-            <select id="seat-place" name="seatPlace" required>
+        <div class="seat-place">
+            <label for="placeNumber">Место: </label>
+            <select id="placeNumber" name="placeNumber" required>
                 <option th:each="i: ${#numbers.sequence(1, seats.get(1))}" th:value="${i}" th:text="${i}">
             </select>
+        </div>
+        <div>
+            <input type="hidden" name="sessionId" th:value="${id}">
         </div>
         <div class="buttons">
             <button type="submit" class="buy">Купить</button>

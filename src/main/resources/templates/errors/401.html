@@ -3,11 +3,11 @@
 <head th:include="blocks/header :: header">
 </head>
 <body>
-<div th:replace="blocks/navbar :: navbar"></div>
+<div class="navigation" th:replace="blocks/navbar :: navbar"></div>
 <div class="container">
     <h3 class="mt-3">Произошла ошибка</h3>
     <p class="text-danger" th:text="${message}"></p>
 </div>
-<div th:include="blocks/footer :: footer"></div>
+<footer class="footer" th:include="blocks/footer :: footer"></footer>
 </body>
 </html>
