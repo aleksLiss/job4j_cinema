@@ -3,7 +3,6 @@ package ru.job4j.cinema.service;
 import net.jcip.annotations.ThreadSafe;
 import org.springframework.stereotype.Service;
 import ru.job4j.cinema.dto.FilmSessionDto;
-import ru.job4j.cinema.dto.FilmSessionTwoDto;
 import ru.job4j.cinema.model.*;
 import ru.job4j.cinema.repository.*;
 
@@ -37,20 +36,26 @@ public class SimpleFilmSessionService implements FilmSessionService {
             Optional<Film> film = filmRepository.getById(filmSession.getFilmId());
             Optional<Hall> hall = hallRepository.getById(filmSession.getHallsId());
             Optional<Genre> genre = genreRepository.getById(film.get().getGenreId());
-            FilmSessionDto filmSessionDto = new FilmSessionDto(film.get().getId(), film.get().getName(), genre.get().getName(), hall.get().getName(), filmSession.getStartTime());
+            FilmSessionDto filmSessionDto = FilmSessionDto.builder()
+                    .setId(filmSession.getId())
+                    .setFilmName(film.get().getName())
+                    .setGenre(genre.get().getName())
+                    .setHall(hall.get())
+                    .setStartTime(filmSession.getStartTime());
             filmSessionDtos.add(filmSessionDto);
         }
         return filmSessionDtos;
     }
 
     @Override
-    public Optional<FilmSessionTwoDto> getById(int id) {
+    public Optional<FilmSessionDto> getById(int id) {
         Optional<FilmSession> filmSession = filmSessionRepository.getById(id);
         Optional<Film> film = filmRepository.getById(filmSession.get().getFilmId());
         Optional<Hall> hall = hallRepository.getById(filmSession.get().getHallsId());
         Optional<Genre> genre = genreRepository.getById(film.get().getGenreId());
         Optional<File> file = fileRepository.getById(film.get().getFileId());
-        FilmSessionTwoDto filmSessionTwoDto = FilmSessionTwoDto.builder()
+        FilmSessionDto filmSessionTwoDto = FilmSessionDto.builder()
+                .setId(filmSession.get().getId())
                 .setFilmName(film.get().getName())
                 .setDescription(film.get().getDescription())
                 .setMinimalAge(film.get().getMinimalAge())

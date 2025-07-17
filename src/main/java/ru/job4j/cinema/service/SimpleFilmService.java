@@ -5,9 +5,11 @@ import org.springframework.stereotype.Service;
 import ru.job4j.cinema.dto.FilmDto;
 import ru.job4j.cinema.model.File;
 import ru.job4j.cinema.model.Film;
+import ru.job4j.cinema.model.FilmSession;
 import ru.job4j.cinema.model.Genre;
 import ru.job4j.cinema.repository.FileRepository;
 import ru.job4j.cinema.repository.FilmRepository;
+import ru.job4j.cinema.repository.FilmSessionRepository;
 import ru.job4j.cinema.repository.GenreRepository;
 
 import java.util.ArrayList;
@@ -22,11 +24,13 @@ public class SimpleFilmService implements FilmService {
     private final FilmRepository filmRepository;
     private final FileRepository fileRepository;
     private final GenreRepository genreRepository;
+    private final FilmSessionRepository filmSessionRepository;
 
-    public SimpleFilmService(FilmRepository filmRepository, FileRepository fileRepository, GenreRepository genreRepository) {
+    public SimpleFilmService(FilmRepository filmRepository, FileRepository fileRepository, GenreRepository genreRepository, FilmSessionRepository filmSessionRepository) {
         this.filmRepository = filmRepository;
         this.fileRepository = fileRepository;
         this.genreRepository = genreRepository;
+        this.filmSessionRepository = filmSessionRepository;
     }
 
     @Override
