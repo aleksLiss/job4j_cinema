@@ -6,21 +6,23 @@ import java.time.LocalDateTime;
 
 public interface DtoBuilder {
 
-    FilmSessionTwoDto setFilmName(String filmName);
+    FilmSessionDto setId(int id);
 
-    FilmSessionTwoDto setDescription(String description);
+    FilmSessionDto setFilmName(String filmName);
 
-    FilmSessionTwoDto setGenre(String genre);
+    FilmSessionDto setDescription(String description);
 
-    FilmSessionTwoDto setMinimalAge(int minimalAge);
+    FilmSessionDto setGenre(String genre);
 
-    FilmSessionTwoDto setDurationInMinutes(int durationInMinutes);
+    FilmSessionDto setMinimalAge(int minimalAge);
 
-    FilmSessionTwoDto setFileId(int fileId);
+    FilmSessionDto setDurationInMinutes(int durationInMinutes);
 
-    FilmSessionTwoDto setHall(Hall hall);
+    FilmSessionDto setFileId(int fileId);
 
-    FilmSessionTwoDto setStartTime(LocalDateTime startTime);
+    FilmSessionDto setHall(Hall hall);
 
-    FilmSessionTwoDto setPathToFile(String pathToFile);
+    FilmSessionDto setStartTime(LocalDateTime startTime);
+
+    FilmSessionDto setPathToFile(String pathToFile);
 }
