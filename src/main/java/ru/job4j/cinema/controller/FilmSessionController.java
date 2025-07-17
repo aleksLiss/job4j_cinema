@@ -6,7 +6,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.cinema.dto.FilmSessionDto;
-import ru.job4j.cinema.dto.FilmSessionTwoDto;
+import ru.job4j.cinema.dto.TicketDto;
+import ru.job4j.cinema.format.CustomDateTimeFormatter;
+import ru.job4j.cinema.model.Ticket;
 import ru.job4j.cinema.model.User;
 import ru.job4j.cinema.service.FilmSessionService;
 import ru.job4j.cinema.service.TicketService;
@@ -22,33 +24,31 @@ import java.util.Optional;
 public class FilmSessionController {
 
     private final FilmSessionService filmSessionService;
-    private final UserController userController;
     private final TicketService ticketService;
+    private final CustomDateTimeFormatter customDateTimeFormatter;
 
-    public FilmSessionController(FilmSessionService filmSessionService, UserController userController, TicketService ticketService) {
+    public FilmSessionController(FilmSessionService filmSessionService, TicketService ticketService, CustomDateTimeFormatter customDateTimeFormatter) {
         this.filmSessionService = filmSessionService;
-        this.userController = userController;
         this.ticketService = ticketService;
+        this.customDateTimeFormatter = customDateTimeFormatter;
     }
 
     @GetMapping
-    public String getFilmSessions(Model model, HttpSession session) {
+    public String getFilmSessions(Model model) {
         Collection<FilmSessionDto> filmSessionDtos = filmSessionService.getAll();
-        userController.addUserToModel(session, model);
         model.addAttribute("sessions", filmSessionDtos);
         return "sessions/list";
     }
 
     @GetMapping("/{id}")
-    public String getById(Model model, @PathVariable("id") int id, HttpSession session) {
-        Optional<FilmSessionTwoDto> filmSessionDtoOptional;
+    public String getById(Model model, @PathVariable("id") int id) {
+        Optional<FilmSessionDto> filmSessionDtoOptional;
         try {
             filmSessionDtoOptional = filmSessionService.getById(id);
         } catch (Exception ex) {
             model.addAttribute("message", "Такой сессии не существует");
             return "errors/404";
         }
-        userController.addUserToModel(session, model);
         List<Integer> seats = new ArrayList<>();
         seats.add(filmSessionDtoOptional.get().getHall().getRowCount());
         seats.add(filmSessionDtoOptional.get().getHall().getPlaceCount());
@@ -61,16 +61,36 @@ public class FilmSessionController {
     @PostMapping("/{id}")
     public String getTicket(Model model,
                             @PathVariable("id") int id,
-                            @RequestParam("seatPlace") int place,
-                            @RequestParam("seat-row") int row,
+                            @ModelAttribute("ticket") Ticket ticket,
                             HttpSession session) {
         model.addAttribute("id", id);
         User user = (User) session.getAttribute("user");
         if (user == null) {
             return "redirect:/users/login";
         }
-        System.out.println(place);
-        System.out.println(row);
-        return "redirect:/sessions";
+        Collection<Ticket> tickets = ticketService.getAll();
+        ticket.setUserId(user.getId());
+        for (Ticket tick : tickets) {
+            if (isEqualTicket(ticket, tick)) {
+                model.addAttribute("message", "Не удалось приобрести билет на заданное место. Вероятно оно уже занято. Перейдите на страницу бронирования билетов и попробуйте снова.");
+                return "errors/401";
+            }
+        }
+        Ticket savedTicket = ticketService.save(ticket).get();
+        Optional<FilmSessionDto> filmSessionDto = filmSessionService.getById(savedTicket.getSessionId());
+        TicketDto ticketDto = new TicketDto(
+                filmSessionDto.get().getFilmName(),
+                filmSessionDto.get().getHall().getName(),
+                customDateTimeFormatter.format(filmSessionDto.get().getStartTime()),
+                savedTicket.getRowNumber(),
+                savedTicket.getPlaceNumber());
+        model.addAttribute("ticket", ticketDto);
+        return "tickets/one";
+    }
+
+    private static boolean isEqualTicket(Ticket oldTicket, Ticket newTicket) {
+        return oldTicket.getPlaceNumber() == newTicket.getPlaceNumber() &&
+                oldTicket.getRowNumber() == newTicket.getRowNumber() &&
+                oldTicket.getSessionId() == newTicket.getSessionId();
     }
 }
