@@ -12,15 +12,8 @@ import ru.job4j.cinema.model.User;
 @Controller
 public class IndexController {
 
-    private final UserController userController;
-
-    public IndexController(UserController userController) {
-        this.userController = userController;
-    }
-
     @GetMapping({"/", "/index"})
-    public String getIndex(Model model, HttpSession session) {
-        userController.addUserToModel(session, model);
+    public String getIndex() {
         return "index";
     }
 }
