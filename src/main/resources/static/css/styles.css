@@ -37,8 +37,8 @@
              text-align: right;
         }
         .nv {
-            display: flex;           /* размещаем элементы в строку */
-            justify-content: right; /* выравниваем по правому краю */
-            gap: 10px;               /* расстояние между элементами (опционально) */
+            display: flex;
+            justify-content: right;
+            gap: 10px;
             border-radius: 4px;
         }
