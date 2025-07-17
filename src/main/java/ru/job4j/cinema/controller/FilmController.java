@@ -1,6 +1,5 @@
 package ru.job4j.cinema.controller;
 
-import jakarta.servlet.http.HttpSession;
 import net.jcip.annotations.ThreadSafe;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,27 +18,23 @@ import java.util.Optional;
 public class FilmController {
 
     private final FilmService filmService;
-    private final UserController userController;
 
-    public FilmController(FilmService filmService, UserController userController) {
+    public FilmController(FilmService filmService) {
         this.filmService = filmService;
-        this.userController = userController;
     }
 
     @GetMapping
-    public String getFilms(Model model, HttpSession session) {
+    public String getFilms(Model model) {
         Collection<FilmDto> filmDtos = filmService.getAll();
         model.addAttribute("films", filmDtos);
-        userController.addUserToModel(session, model);
         return "films/list";
     }
 
     @GetMapping("/{id}")
     public String getFilm(Model model, @PathVariable("id") int id) {
-        Optional<FilmDto> filmDto;
-        try {
-            filmDto = filmService.getOne(id);
-        } catch (Exception ex) {
+        Optional<FilmDto> filmDto = filmService.getOne(id);
+        if (filmDto.isEmpty()) {
+            model.addAttribute("message", "Такой фильм не найден");
             return "errors/404";
         }
         model.addAttribute("film", filmDto.get());
