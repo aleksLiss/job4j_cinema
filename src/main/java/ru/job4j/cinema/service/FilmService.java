@@ -11,4 +11,6 @@ public interface FilmService {
     Collection<FilmDto> getAll();
 
     Optional<FilmDto> getOne(int id);
+
+//    Film save(FilmDto filmDto);
 }
