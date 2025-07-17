@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:include="blocks/header :: header">
+</head>
+<body>
+<div th:replace="blocks/navbar :: navbar"></div>
+<h1>Ваша покупка прошла успешно</h1>
+<div class="film">
+    <label>Фильм: </label>
+    <div th:text="${ticket.filmName}"></div>
+    <label>Начало: </label>
+    <div th:text="${ticket.startTime}"></div>
+    <label>Зал: </label>
+    <div th:text="${ticket.hallName}"></div>
+    <label>Ряд:</label>
+    <div th:text="${ticket.rowNumber}"></div>
+    <label>Место:</label>
+    <div th:text="${ticket.placeNumber}"></div>
+</div>
+<footer th:include="blocks/footer :: footer"></footer>
+</body>
+</html>
