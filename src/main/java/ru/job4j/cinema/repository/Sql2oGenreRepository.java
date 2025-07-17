@@ -53,20 +53,6 @@ public class Sql2oGenreRepository implements GenreRepository {
     }
 
     @Override
-    public boolean update(Genre genre) {
-        String sql = "UPDATE genres SET name = :name WHERE id = :id";
-        boolean isUpdated;
-        try (Connection connection = sql2o.open()) {
-            try (Query query = connection.createQuery(sql)) {
-                query.addParameter("name", genre.getName())
-                        .addParameter("id", genre.getId());
-                isUpdated = query.executeUpdate().getResult() > 0;
-            }
-        }
-        return isUpdated;
-    }
-
-    @Override
     public boolean deleteById(int id) {
         String sql = "DELETE FROM genres WHERE id = :id";
         boolean isDeleted;

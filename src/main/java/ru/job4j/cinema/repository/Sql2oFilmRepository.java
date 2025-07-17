@@ -41,9 +41,10 @@ public class Sql2oFilmRepository implements FilmRepository {
 
     @Override
     public Optional<Film> save(Film film) {
-        String sql = """
-                INSERT INTO films(name, description, year, genre_id, minimal_age, duration_in_minutes, file_id)
-                VALUES(:name, :description, :year, :genreId, :minimalAge, :durationInMinutes, :fileId);
+        String sql =
+                """
+                INSERT INTO films(name, description, "year", genre_id, minimal_age, duration_in_minutes, file_id)
+                VALUES (:name, :description, :year, :genreId, :minimalAge, :durationInMinutes, :fileId)
                 """;
         try (Connection connection = sql2o.open()) {
             try (Query query = connection.createQuery(sql)) {
@@ -66,7 +67,7 @@ public class Sql2oFilmRepository implements FilmRepository {
     public boolean update(Film film) {
         String sql = """
                 UPDATE films
-                SET name = :name, description = :description, year = :year, genre_id = :genreId, minimal_age = :minimalAge, duration_in_minutes = :durationInMinutes, file_id = :fileId
+                SET name = :name, description = :description, "year" = :year, genre_id = :genreId, minimal_age = :minimalAge, duration_in_minutes = :durationInMinutes, file_id = :fileId
                 where id = :id
                 """;
         boolean isUpdated;
@@ -93,6 +94,7 @@ public class Sql2oFilmRepository implements FilmRepository {
         boolean isDeleted;
         try (Connection connection = sql2o.open()) {
             try (Query query = connection.createQuery(sql)) {
+                query.addParameter("id", id);
                 isDeleted = query.executeUpdate().getResult() > 0;
             }
         }

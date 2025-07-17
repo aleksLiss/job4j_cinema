@@ -66,7 +66,7 @@ public class Sql2oFilmSessionRepository implements FilmSessionRepository {
     public boolean update(FilmSession filmSession) {
         String sql = """
                 UPDATE film_sessions
-                SET filmId = :filmId, hallsId = :hallsId, startTime = :startTime, endTime = :endTime, price = :price
+                SET film_id = :filmId, halls_id = :hallsId, start_time = :startTime, end_time = :endTime, price = :price
                 WHERE id = :id
                 """;
         boolean isUpdated;

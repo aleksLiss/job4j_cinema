@@ -22,11 +22,6 @@ public class Sql2oUserRepository implements UserRepository {
     }
 
     @Override
-    public Collection<User> getAll() {
-        return List.of();
-    }
-
-    @Override
     public Optional<User> getById(int id) {
         String sql = "SELECT * FROM users WHERE id = :id";
         try (Connection connection = sql2o.open()) {
@@ -56,13 +51,14 @@ public class Sql2oUserRepository implements UserRepository {
     }
 
     @Override
-    public boolean update(User user) {
-        return false;
-    }
-
-    @Override
     public boolean deleteById(int id) {
-        return false;
+        String sql = "DELETE FROM users WHERE id = :id";
+        try (Connection connection = sql2o.open()) {
+            try (Query query = connection.createQuery(sql)) {
+                query.addParameter("id", id);
+                return query.executeUpdate().getResult() > 0;
+            }
+        }
     }
 
     @Override
