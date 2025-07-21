@@ -89,8 +89,8 @@ public class FilmSessionController {
     }
 
     private static boolean isEqualTicket(Ticket oldTicket, Ticket newTicket) {
-        return oldTicket.getPlaceNumber() == newTicket.getPlaceNumber() &&
-                oldTicket.getRowNumber() == newTicket.getRowNumber() &&
-                oldTicket.getSessionId() == newTicket.getSessionId();
+        return oldTicket.getPlaceNumber() == newTicket.getPlaceNumber()
+                && oldTicket.getRowNumber() == newTicket.getRowNumber()
+                && oldTicket.getSessionId() == newTicket.getSessionId();
     }
 }

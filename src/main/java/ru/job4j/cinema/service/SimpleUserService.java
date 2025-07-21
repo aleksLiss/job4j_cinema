@@ -31,6 +31,4 @@ public class SimpleUserService implements UserService {
     public Optional<User> findByEmailAndPassword(User user) {
         return userRepository.findByEmailAndPassword(user);
     }
-
-
 }
